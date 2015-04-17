@@ -111,8 +111,6 @@ class TYPO3_Sniffs_PHP_DeprecatedFunctionsSniff extends Generic_Sniffs_PHP_Forbi
 		}
 
 		list($namespace, $method) = explode('::', $function);
-		var_dump($namespace);
-		var_dump($method);
 		if (isset($this->deprecatedCalls[$namespace][$method])) {
 			$replacement = $this->deprecatedCalls[$namespace][$method];
 			$warning = 'Deprecated method call ' . $function . '. Use ' . $replacement . ' instead';
