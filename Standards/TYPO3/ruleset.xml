@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<ruleset name="TYPO3_CodeSniffer">
+	<description>Coding Standard that checks for TYPO3 API compatibility.</description>
+</ruleset>
