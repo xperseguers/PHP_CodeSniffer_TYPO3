@@ -11,6 +11,9 @@ Usage:
 git clone https://github.com/xperseguers/PHP_CodeSniffer_TYPO3.git
 cd PHP_CodeSniffer_TYPO3
 composer install
+vendor/bin/phpcs --config-set report_width auto
+
+# Test files
 vendor/bin/phpcs --standard=Standards/TYPO3 example/TestUtility.php
 ```
 

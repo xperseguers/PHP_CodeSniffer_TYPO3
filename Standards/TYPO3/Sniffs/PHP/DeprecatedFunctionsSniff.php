@@ -4,6 +4,12 @@ class TYPO3_Sniffs_PHP_DeprecatedFunctionsSniff extends Generic_Sniffs_PHP_Forbi
 	protected $namespace = '';
 	protected $uses = array();
 
+	protected $deprecatedCalls = array(
+		'\\TYPO3\\CMS\\Core\\Utility\\GeneralUtility' => array(
+			'inArray' => 'ArrayUtility::inArray()',
+		),
+	);
+
 	/**
 	 * Returns an array of tokens this test wants to listen for.
 	 *
@@ -87,7 +93,6 @@ class TYPO3_Sniffs_PHP_DeprecatedFunctionsSniff extends Generic_Sniffs_PHP_Forbi
 		}
 
 		// Compute the complete function call (only works for static methods)
-		//var_dump($this->getConstantName('T_', $tokens[$functionKeyword]['code']));
 		if ($tokens[$functionKeyword]['code'] !== T_DOUBLE_COLON) {
 			// Non static method
 			return;
@@ -105,7 +110,14 @@ class TYPO3_Sniffs_PHP_DeprecatedFunctionsSniff extends Generic_Sniffs_PHP_Forbi
 			$function = $this->expandFunction($function);
 		}
 
-		var_dump($function);
+		list($namespace, $method) = explode('::', $function);
+		var_dump($namespace);
+		var_dump($method);
+		if (isset($this->deprecatedCalls[$namespace][$method])) {
+			$replacement = $this->deprecatedCalls[$namespace][$method];
+			$warning = 'Deprecated method call ' . $function . '. Use ' . $replacement . ' instead';
+			$phpcsFile->addWarning($warning, $stackPtr);
+		}
 	}
 
 	protected function expandFunction($partialName) {
@@ -118,17 +130,4 @@ class TYPO3_Sniffs_PHP_DeprecatedFunctionsSniff extends Generic_Sniffs_PHP_Forbi
 		return $name . '::' . $suffix;
 	}
 
-	// DEBUG
-	private function getConstantName($category, $constantNumber) {
-		foreach (get_defined_constants() as $key => $value) {
-			if (strlen($key) > strlen($category)) {
-				if (substr($key, 0, strlen($category)) === $category) {
-					if ($value == $constantNumber) {
-						return $key;
-					}
-				}
-			}
-		}
-		return "No constant found.";
-	}
 }
